@@ -1,0 +1,202 @@
+<%- layout('layouts/boilerplate') %>
+
+<!-- HERO SECTION -->
+<div class="jumbotron bg-light p-5 rounded-lg m-0">
+  <h1 class="display-4">Welcome to 𝕄𝕒𝕜𝕖𝕄𝕪पथ</h1>
+  <p class="lead">Discover amazing places to stay around the world</p>
+
+  <% if (user) { %>
+    <a href="/listings" class="btn btn-primary btn-lg me-2">Browse Listings</a>
+    <a href="/listings/new" class="btn btn-success btn-lg">Add New Listing</a>
+  <% } else { %>
+    <a href="/login" class="btn btn-primary btn-lg me-2">Login</a>
+    <a href="/signup" class="btn btn-success btn-lg">Sign Up</a>
+  <% } %>
+</div>
+
+<!-- ICON SECTION -->
+<div class="row mt-5">
+  <div class="col-md-4 text-center">
+    <i class="fa-solid fa-globe fa-3x text-primary mb-3"></i>
+    <h5>Explore</h5>
+    <p>Find amazing places to stay worldwide</p>
+  </div>
+
+  <div class="col-md-4 text-center" id="connectSection" style="cursor:pointer;">
+    <i class="fa-solid fa-heart fa-3x text-danger mb-3"></i>
+    <h5>Connect</h5>
+    <p>Connect with travelers and hosts</p>
+  </div>
+
+  <div class="col-md-4 text-center">
+    <i class="fa-solid fa-star fa-3x text-warning mb-3"></i>
+    <h5>Experience</h5>
+    <p>Create unforgettable memories</p>
+  </div>
+</div>
+
+<!-- ⭐ PROFILE CARDS SECTION -->
+<div class="container mt-5">
+  <h2 class="mb-4">Top Travelers & Reviews</h2>
+
+  <div class="row">
+
+    <div class="col-md-3">
+      <div class="card shadow-sm profile-card">
+        <img src="/images/profile1.jpg" class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">Aarav Sharma</h5>
+          <p class="text-muted">⭐ 4.8 | 12 reviews</p>
+          <p>"Amazing host and perfect stay!"</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm profile-card">
+        <img src="/images/profile2.jpg" class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">Priya Mehra</h5>
+          <p class="text-muted">⭐ 4.6 | 8 reviews</p>
+          <p>"Loved the ambience and vibe."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm profile-card">
+        <img src="/images/profile3.jpg" class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">Rohan Verma</h5>
+          <p class="text-muted">⭐ 4.9 | 15 reviews</p>
+          <p>"Perfect destination for a weekend."</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm profile-card">
+        <img src="../public/images/  " class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">Sara Khan</h5>
+          <p class="text-muted">⭐ 5.0 | 20 reviews</p>
+          <p>"Best experience ever!"</p>
+        </div>
+      </div>
+    </div>
+    
+  </div>
+</div>
+
+<!-- 🎁 OFFERS SECTION -->
+<div class="container mt-5">
+  <h2 class="mb-4">Exclusive Offers for You</h2>
+
+  <div class="row">
+
+    <div class="col-md-4">
+      <div class="card offer-card shadow-sm">
+        <span class="badge bg-danger offer-badge">25% OFF</span>
+    <img src="https://i.pinimg.com/originals/3d/3d/1c/3d3d1c3dcb8e4ea28a4e3ebff2bee2c4.jpg"
+            class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">Beach Resort Goa</h5>
+          <p>Enjoy a peaceful vacation by the sea.</p>
+          <button class="btn btn-primary">Grab Offer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card offer-card shadow-sm">
+        <span class="badge bg-danger offer-badge">40% OFF</span>
+        <img       src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aG90ZWxzfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60"
+  class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">Mountain Retreat</h5>
+          <p>Enjoy fresh mountain air this weekend.</p>
+          <button class="btn btn-primary">Grab Offer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card offer-card shadow-sm">
+        <span class="badge bg-danger offer-badge">15% OFF</span>
+        <img       src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aG90ZWxzfGVufDB8fDB8fHww&auto=format&fit=crop&w=800&q=60"
+ class="card-img-top">
+        <div class="card-body">
+          <h5 class="card-title">Luxury Villa Bali</h5>
+          <p>Experience luxury & calmness at Bali.</p>
+          <button class="btn btn-primary">Grab Offer</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PROJECT REPORT SECTION -->
+<div class="container mt-5" id="projectReportWrapper">
+  <button id="toggleReport" class="btn btn-outline-secondary mb-3">Show Project Report</button>
+
+  <div id="projectReport" class="card p-4" style="display:none;">
+    <h2>Project Report — MakeMyPath</h2>
+
+    <h4>Introduction</h4>
+    <p>MakeMyPath is a web platform to discover and book curated travel listings.</p>
+
+    <h4>Problem Statement</h4>
+    <p>Travelers struggle to find reliable stays with verified reviews.</p>
+
+    <h4>Proposed Solution</h4>
+    <p>Full-stack app using Node, Express, MongoDB, Razorpay, OTP auth.</p>
+
+    <h4>System Architecture</h4>
+    <ul>
+      <li>Client: EJS + Bootstrap</li>
+      <li>Server: Express</li>
+      <li>DB: MongoDB</li>
+      <li>Payments: Razorpay</li>
+    </ul>
+
+    <h4>UML Diagram</h4>
+    <img src="/images/uml-diagram.png" alt="UML">
+
+    <h4>Client Flow</h4>
+    <img src="/images/client-diagram.png" alt="Client Flow">
+
+    <h4>Conclusion</h4>
+    <p>MakeMyPath simplifies travel booking with secure payments and reviews.</p>
+  </div>
+</div>
+
+<!-- 🧩 CSS -->
+<style>
+  .profile-card img { height: 160px; object-fit: cover; border-radius: 10px; }
+  .offer-card { position: relative; border-radius: 12px; }
+  .offer-card img { height: 200px; object-fit: cover; border-radius: 10px; }
+  .offer-badge {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 8px;
+    font-size: 14px;
+  }
+</style>
+
+<!-- 🧠 JS -->
+<script>
+  const toggleBtn = document.getElementById("toggleReport");
+  const report = document.getElementById("projectReport");
+
+  toggleBtn.addEventListener("click", () => {
+    if (report.style.display === "none") {
+      report.style.display = "block";
+      toggleBtn.textContent = "Hide Project Report";
+    } else {
+      report.style.display = "none";
+      toggleBtn.textContent = "Show Project Report";
+    }
+  });
+</script>

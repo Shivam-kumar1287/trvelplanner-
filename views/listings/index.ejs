@@ -1,0 +1,74 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="mb-0">All Listings</h1>
+  <form class="d-flex" method="GET" action="/listings">
+    <input
+      class="form-control me-2"
+      type="search"
+      name="q"
+      placeholder="Search listings..."
+      value="<%= typeof searchQuery !== 'undefined' ? searchQuery : '' %>"
+    >
+    <button class="btn btn-outline-primary" type="submit">Search</button>
+  </form>
+</div>
+
+<% if (allistings.length === 0) { %>
+  <p class="text-muted">No listings found. Try a different search.</p>
+<% } else { %>
+  <div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1">
+    <% allistings.forEach(Listing => { %>
+      <div class="col mb-4">
+        <div class="card h-100">
+          <a href="/listings/<%= Listing._id %>" style="text-decoration:none; color:inherit;">
+            <img src="<%= Listing.image.url %>" class="card-img-top" style="height:20rem; object-fit:cover;">
+          </a>
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title"><%= Listing.title %></h5>
+            <p class="card-text mb-2">₹<%= Listing.price %> / night</p>
+
+            <%
+              var reviewCount = (Listing.reviews && Listing.reviews.length) || 0;
+              var totalRating = 0;
+              if (reviewCount > 0) {
+                Listing.reviews.forEach(function(r) {
+                  totalRating += r.rating;
+                });
+              }
+              var avgRating = reviewCount > 0 ? totalRating / reviewCount : 0;
+              var roundedRating = Math.round(avgRating);
+              var firstComment = reviewCount > 0 ? Listing.reviews[0].comment : null;
+            %>
+
+            <div class="mb-1">
+              <% for (var i = 1; i <= 5; i++) { %>
+                <% if (i <= roundedRating) { %>
+                  <span class="text-warning">&#9733;</span>
+                <% } else { %>
+                  <span class="text-muted">&#9733;</span>
+                <% } %>
+              <% } %>
+              <small class="text-muted ms-1">
+                <%= reviewCount %> review<%= reviewCount === 1 ? "" : "s" %>
+              </small>
+            </div>
+
+            <% if (firstComment) { %>
+              <p class="text-muted small mb-2" style="max-height:3rem; overflow:hidden;">
+                "<%= firstComment %>"
+              </p>
+            <% } else { %>
+              <p class="text-muted small mb-2">No reviews yet.</p>
+            <% } %>
+
+            <div class="mt-auto d-flex justify-content-between">
+              <a href="/listings/<%= Listing._id %>#reviews" class="btn btn-sm btn-outline-primary">Reviews</a>
+              <a href="/listings/<%= Listing._id %>#booking" class="btn btn-sm btn-success">Book</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+<% } %>

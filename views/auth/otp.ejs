@@ -1,0 +1,1023 @@
+<%- layout('layouts/boilerplate') %>
+
+<!-- ================= BACKGROUND VIDEO ================= -->
+<div class="video-container">
+  <video autoplay muted loop playsinline class="bg-video">
+    <source src="/vedio/trvel.mp4" type="video/mp4">
+    <!-- Fallback for browsers that don't support video -->
+    <div class="video-fallback"></div>
+  </video>
+
+  <!-- Enhanced gradient overlay for professional look -->
+  <div class="overlay"></div>
+</div>
+
+<!-- ================= OTP VERIFICATION FORM ================= -->
+<div class="otp-container">
+  <div class="otp-card">
+    <div class="card-header">
+      <div class="otp-icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 15V17M6 21H18C19.1046 21 20 20.1046 20 19V13C20 11.8954 19.1046 11 18 11H6C4.89543 11 4 11.8954 4 13V19C4 20.1046 4.89543 21 6 21ZM16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11H16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 12L17 14L19 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <h2 class="otp-title">Reset Password</h2>
+      <p class="sub-text">Enter the OTP sent to your email and create a new password</p>
+    </div>
+
+    <div class="email-display">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M22 6L12 13L2 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span><strong><%= email %></strong></span>
+    </div>
+
+    <% if (typeof error !== 'undefined' && error) { %>
+      <div class="alert alert-danger" role="alert">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <%= error %>
+      </div>
+    <% } %>
+
+    <form method="POST" action="/otp" class="otp-form" id="otpForm">
+      <input type="hidden" name="email" value="<%= email %>">
+      
+      <!-- OTP Input -->
+      <div class="input-group">
+        <input type="text" name="otp" id="otp" placeholder="Enter 6-digit code" required class="input-field" maxlength="6" pattern="[0-9]{6}" inputmode="numeric">
+        <label for="otp" class="input-label">Verification Code</label>
+        <div class="input-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 15V17M6 21H18C19.1046 21 20 20.1046 20 19V13C20 11.8954 19.1046 11 18 11H6C4.89543 11 4 11.8954 4 13V19C4 20.1046 4.89543 21 6 21ZM16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11H16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="otp-timer" id="otpTimer">
+          <span id="timerText">05:00</span>
+        </div>
+      </div>
+
+      <!-- New Password Input -->
+      <div class="input-group">
+        <input type="password" name="password" id="password" placeholder="Create new password" required class="input-field">
+        <label for="password" class="input-label">New Password</label>
+        <div class="input-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 15V17M6 21H18C19.1046 21 20 20.1046 20 19V13C20 11.8954 19.1046 11 18 11H6C4.89543 11 4 11.8954 4 13V19C4 20.1046 4.89543 21 6 21ZM16 11V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V11H16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <button type="button" class="password-toggle" id="passwordToggle" aria-label="Toggle password visibility">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Password Strength Indicator -->
+      <div class="password-strength" id="passwordStrength">
+        <div class="strength-bar">
+          <div class="strength-fill" id="strengthFill"></div>
+        </div>
+        <div class="strength-text" id="strengthText">Password strength</div>
+      </div>
+
+      <!-- Password Requirements -->
+      <div class="password-requirements">
+        <div class="requirement" data-requirement="length">
+          <span class="requirement-icon">●</span>
+          <span class="requirement-text">At least 8 characters</span>
+        </div>
+        <div class="requirement" data-requirement="uppercase">
+          <span class="requirement-icon">●</span>
+          <span class="requirement-text">One uppercase letter</span>
+        </div>
+        <div class="requirement" data-requirement="lowercase">
+          <span class="requirement-icon">●</span>
+          <span class="requirement-text">One lowercase letter</span>
+        </div>
+        <div class="requirement" data-requirement="number">
+          <span class="requirement-icon">●</span>
+          <span class="requirement-text">One number</span>
+        </div>
+        <div class="requirement" data-requirement="special">
+          <span class="requirement-icon">●</span>
+          <span class="requirement-text">One special character</span>
+        </div>
+      </div>
+
+      <button type="submit" class="otp-btn w-100">
+        <span class="btn-text">Reset Password</span>
+        <div class="btn-loader"></div>
+        <div class="btn-particles"></div>
+      </button>
+    </form>
+
+    <div class="otp-links">
+      <form id="resendForm" method="POST" action="/forgot" class="resend-form">
+        <input type="hidden" name="email" value="<%= email %>">
+        <button id="resendBtn" class="link-btn" type="submit" disabled>
+          <span class="btn-text">Resend OTP</span>
+          <span class="countdown" id="resendCountdown"></span>
+        </button>
+      </form>
+
+      <a href="/forgot" class="link-btn change-email">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M19 12H5M5 12L12 19M5 12L12 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        Change Email
+      </a>
+    </div>
+
+    <div class="security-notice">
+      <div class="notice-icon">⚠️</div>
+      <p>For security reasons, the OTP will expire in 5 minutes. Make sure to create a strong password.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= ENHANCED CSS ================= -->
+<style>
+  /* CSS Variables for consistent theming */
+  :root {
+    --primary-gradient: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    --success-gradient: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    --success-hover: linear-gradient(135deg, #0f7c6c 0%, #2fd671 100%);
+    --warning-color: #ffd200;
+    --glass-bg: rgba(255, 255, 255, 0.12);
+    --glass-border: rgba(255, 255, 255, 0.18);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.85);
+    --shadow-primary: 0 20px 40px rgba(0, 0, 0, 0.3);
+    --shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.4);
+    --border-radius: 16px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+
+  /* Base styles */
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    color: var(--text-primary);
+    overflow-x: hidden;
+  }
+
+  /* Background video */
+  .video-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    z-index: -2;
+  }
+
+  .bg-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.7);
+    transition: filter 0.5s ease;
+  }
+
+  .video-fallback {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a2a6c, #b21f1f, #2575fc);
+    z-index: -1;
+  }
+
+  /* Enhanced gradient overlay */
+  .overlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: linear-gradient(
+      135deg,
+      rgba(0, 0, 0, 0.5) 0%,
+      rgba(0, 0, 0, 0.4) 50%,
+      rgba(0, 0, 0, 0.5) 100%
+    );
+    z-index: -1;
+  }
+
+  /* OTP Verification section */
+  .otp-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 30px;
+    position: relative;
+    z-index: 5;
+  }
+
+  /* Enhanced glass effect card */
+  .otp-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px) saturate(180%);
+    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--border-radius);
+    padding: 50px 40px 40px;
+    box-shadow: var(--shadow-primary);
+    width: 100%;
+    max-width: 480px;
+    color: var(--text-primary);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .otp-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--success-gradient);
+    z-index: 1;
+  }
+
+  .otp-card:hover {
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-5px);
+  }
+
+  .card-header {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+
+  .otp-icon {
+    margin-bottom: 20px;
+    color: #38ef7d;
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .otp-title {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    background: var(--success-gradient);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    letter-spacing: -0.5px;
+  }
+
+  .sub-text {
+    font-size: 1.1rem;
+    opacity: 0.85;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+
+  /* Email display */
+  .email-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 30px;
+    font-size: 1.05rem;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    animation: slideIn 0.6s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Enhanced input fields */
+  .otp-form {
+    width: 100%;
+    margin-bottom: 25px;
+  }
+
+  .input-group {
+    position: relative;
+    margin-bottom: 25px;
+  }
+
+  .input-field {
+    width: 100%;
+    padding: 18px 50px 10px 50px;
+    border-radius: 12px;
+    border: 1.5px solid rgba(255, 255, 255, 0.2);
+    outline: none;
+    font-size: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-primary);
+    transition: var(--transition);
+  }
+
+  #otp {
+    font-size: 1.2rem;
+    font-weight: 600;
+    letter-spacing: 8px;
+    text-align: center;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .input-field::placeholder {
+    color: transparent;
+  }
+
+  #otp::placeholder {
+    letter-spacing: normal;
+  }
+
+  .input-field:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
+  }
+
+  .input-label {
+    position: absolute;
+    top: 50%;
+    left: 50px;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1rem;
+    pointer-events: none;
+    transition: var(--transition);
+  }
+
+  .input-field:focus + .input-label,
+  .input-field:not(:placeholder-shown) + .input-label {
+    top: 12px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  #otp:focus + .input-label,
+  #otp:not(:placeholder-shown) + .input-label {
+    left: 20px;
+  }
+
+  .input-icon {
+    position: absolute;
+    left: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgba(255, 255, 255, 0.7);
+    transition: var(--transition);
+  }
+
+  .input-field:focus ~ .input-icon {
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    cursor: pointer;
+    transition: var(--transition);
+    padding: 5px;
+    border-radius: 4px;
+  }
+
+  .password-toggle:hover {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  /* OTP Timer */
+  .otp-timer {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 210, 0, 0.2);
+    color: var(--warning-color);
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+  }
+
+  /* Password Strength Indicator */
+  .password-strength {
+    margin-bottom: 20px;
+    animation: slideIn 0.6s ease-out 0.2s both;
+  }
+
+  .strength-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  .strength-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--success-gradient);
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  .strength-text {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    text-align: center;
+    transition: var(--transition);
+  }
+
+  /* Password Requirements */
+  .password-requirements {
+    margin-bottom: 25px;
+    animation: slideIn 0.6s ease-out 0.4s both;
+  }
+
+  .requirement {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    transition: var(--transition);
+  }
+
+  .requirement.valid {
+    color: #38ef7d;
+  }
+
+  .requirement.valid .requirement-icon {
+    color: #38ef7d;
+  }
+
+  .requirement-icon {
+    font-size: 6px;
+    transition: var(--transition);
+  }
+
+  /* Alert styling */
+  .alert {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    font-weight: 500;
+    text-align: left;
+    border: 1px solid transparent;
+    animation: slideIn 0.5s ease-out;
+  }
+
+  .alert-danger {
+    background: rgba(220, 53, 69, 0.15);
+    border-color: rgba(220, 53, 69, 0.3);
+    color: #ff9aa3;
+  }
+
+  /* Enhanced OTP Button */
+  .otp-btn {
+    background: var(--success-gradient);
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    color: white;
+    cursor: pointer;
+    transition: var(--transition);
+    font-weight: 600;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 56px;
+  }
+
+  .otp-btn:hover {
+    background: var(--success-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(56, 239, 125, 0.3);
+  }
+
+  .otp-btn:active {
+    transform: translateY(-1px);
+  }
+
+  .btn-text {
+    transition: opacity 0.3s ease;
+  }
+
+  .btn-loader {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid transparent;
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    position: absolute;
+  }
+
+  .otp-btn.loading .btn-text {
+    opacity: 0;
+  }
+
+  .otp-btn.loading .btn-loader {
+    display: block;
+  }
+
+  .btn-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+      rgba(255, 255, 255, 0.3) 0%, 
+      transparent 50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+
+  .otp-btn:hover .btn-particles {
+    opacity: 1;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Action Links */
+  .otp-links {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    gap: 15px;
+  }
+
+  .resend-form {
+    flex: 1;
+  }
+
+  .link-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--text-secondary);
+    padding: 12px 20px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: var(--transition);
+    cursor: pointer;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .link-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .link-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .change-email {
+    flex: 1;
+  }
+
+  /* Security Notice */
+  .security-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    border-left: 4px solid var(--warning-color);
+    animation: slideIn 0.6s ease-out 0.6s both;
+  }
+
+  .notice-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .security-notice p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 576px) {
+    .otp-container {
+      padding: 20px;
+    }
+    
+    .otp-card {
+      padding: 40px 25px 30px;
+    }
+    
+    .otp-title {
+      font-size: 1.8rem;
+    }
+    
+    .input-field {
+      padding: 16px 45px 8px 45px;
+    }
+    
+    #otp {
+      padding-left: 15px;
+      padding-right: 15px;
+      letter-spacing: 6px;
+    }
+    
+    .input-label {
+      left: 45px;
+    }
+    
+    #otp:focus + .input-label,
+    #otp:not(:placeholder-shown) + .input-label {
+      left: 15px;
+    }
+    
+    .otp-links {
+      flex-direction: column;
+    }
+    
+    .link-btn {
+      width: 100%;
+    }
+    
+    .security-notice {
+      flex-direction: column;
+      text-align: center;
+      gap: 10px;
+    }
+  }
+
+  /* Reduced motion for accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+    
+    .otp-card:hover {
+      transform: none;
+    }
+    
+    .otp-btn:hover {
+      transform: none;
+    }
+    
+    .link-btn:hover {
+      transform: none;
+    }
+  }
+</style>
+
+<!-- ================= ENHANCED JAVESCRIPT ================= -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Form submission with loading state
+    const otpForm = document.getElementById('otpForm');
+    const otpBtn = document.querySelector('.otp-btn');
+    const btnParticles = document.querySelector('.btn-particles');
+    
+    if (otpForm) {
+      otpForm.addEventListener('submit', function(e) {
+        // Validate password strength before submission
+        const password = document.getElementById('password').value;
+        const strength = calculatePasswordStrength(password);
+        
+        if (strength < 3) { // Require at least medium strength
+          e.preventDefault();
+          showPasswordError('Please create a stronger password');
+          return;
+        }
+        
+        // Add loading state to button
+        otpBtn.classList.add('loading');
+        
+        // Remove loading state after 3 seconds (in case of error)
+        setTimeout(() => {
+          otpBtn.classList.remove('loading');
+        }, 3000);
+      });
+    }
+
+    // Mouse tracking for button particles
+    if (otpBtn && btnParticles) {
+      otpBtn.addEventListener('mousemove', (e) => {
+        const rect = otpBtn.getBoundingClientRect();
+        const x = (e.clientX - rect.left) / rect.width;
+        const y = (e.clientY - rect.top) / rect.height;
+        
+        btnParticles.style.setProperty('--x', x * 100 + '%');
+        btnParticles.style.setProperty('--y', y * 100 + '%');
+      });
+
+      otpBtn.addEventListener('mouseleave', () => {
+        btnParticles.style.setProperty('--x', '50%');
+        btnParticles.style.setProperty('--y', '50%');
+      });
+    }
+
+    // OTP Input handling
+    const otpInput = document.getElementById('otp');
+    if (otpInput) {
+      otpInput.addEventListener('input', function() {
+        // Remove any non-digit characters
+        this.value = this.value.replace(/\D/g, '');
+        
+        // Limit to 6 digits
+        if (this.value.length > 6) {
+          this.value = this.value.slice(0, 6);
+        }
+        
+        // Auto-submit when 6 digits are entered
+        if (this.value.length === 6) {
+          const password = document.getElementById('password').value;
+          if (password.length >= 8) {
+            otpForm.requestSubmit();
+          }
+        }
+        
+        // Add focused state for floating label
+        if (this.value.length > 0) {
+          this.parentElement.classList.add('focused');
+        } else {
+          this.parentElement.classList.remove('focused');
+        }
+      });
+    }
+
+    // Password strength calculator
+    const passwordInput = document.getElementById('password');
+    const strengthFill = document.getElementById('strengthFill');
+    const strengthText = document.getElementById('strengthText');
+    
+    if (passwordInput) {
+      passwordInput.addEventListener('input', function() {
+        const strength = calculatePasswordStrength(this.value);
+        updatePasswordStrength(strength);
+        validatePasswordRequirements(this.value);
+        
+        // Add focused state for floating label
+        if (this.value.length > 0) {
+          this.parentElement.classList.add('focused');
+        } else {
+          this.parentElement.classList.remove('focused');
+        }
+      });
+    }
+
+    function calculatePasswordStrength(password) {
+      let strength = 0;
+      
+      // Length check
+      if (password.length >= 8) strength += 1;
+      if (password.length >= 12) strength += 1;
+      
+      // Character variety checks
+      if (/[A-Z]/.test(password)) strength += 1;
+      if (/[a-z]/.test(password)) strength += 1;
+      if (/[0-9]/.test(password)) strength += 1;
+      if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+      
+      return Math.min(strength, 5); // Max strength of 5
+    }
+
+    function updatePasswordStrength(strength) {
+      const percentage = (strength / 5) * 100;
+      strengthFill.style.width = percentage + '%';
+      
+      // Update colors and text based on strength
+      if (strength <= 1) {
+        strengthFill.style.background = '#ef4444';
+        strengthText.textContent = 'Very Weak';
+        strengthText.style.color = '#ef4444';
+      } else if (strength <= 2) {
+        strengthFill.style.background = '#f59e0b';
+        strengthText.textContent = 'Weak';
+        strengthText.style.color = '#f59e0b';
+      } else if (strength <= 3) {
+        strengthFill.style.background = '#eab308';
+        strengthText.textContent = 'Medium';
+        strengthText.style.color = '#eab308';
+      } else if (strength <= 4) {
+        strengthFill.style.background = '#84cc16';
+        strengthText.textContent = 'Strong';
+        strengthText.style.color = '#84cc16';
+      } else {
+        strengthFill.style.background = '#10b981';
+        strengthText.textContent = 'Very Strong';
+        strengthText.style.color = '#10b981';
+      }
+    }
+
+    function validatePasswordRequirements(password) {
+      const requirements = {
+        length: password.length >= 8,
+        uppercase: /[A-Z]/.test(password),
+        lowercase: /[a-z]/.test(password),
+        number: /[0-9]/.test(password),
+        special: /[^A-Za-z0-9]/.test(password)
+      };
+      
+      Object.keys(requirements).forEach(req => {
+        const element = document.querySelector(`[data-requirement="${req}"]`);
+        if (element) {
+          if (requirements[req]) {
+            element.classList.add('valid');
+          } else {
+            element.classList.remove('valid');
+          }
+        }
+      });
+    }
+
+    function showPasswordError(message) {
+      // Create or update error message
+      let errorDiv = document.querySelector('.password-error');
+      if (!errorDiv) {
+        errorDiv = document.createElement('div');
+        errorDiv.className = 'alert alert-danger password-error';
+        passwordInput.parentNode.insertBefore(errorDiv, passwordInput.nextSibling);
+      }
+      errorDiv.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M15 9L9 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M9 9L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        ${message}
+      `;
+    }
+
+    // Password visibility toggle
+    const passwordToggle = document.getElementById('passwordToggle');
+    if (passwordToggle) {
+      passwordToggle.addEventListener('click', function() {
+        const input = document.getElementById('password');
+        const icon = this.querySelector('svg');
+        
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.innerHTML = `
+            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          `;
+        } else {
+          input.type = 'password';
+          icon.innerHTML = `
+            <path d="M1 12C1 12 5 4 12 4C19 4 23 12 23 12C23 12 19 20 12 20C5 20 1 12 1 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 15C13.6569 15 15 13.6569 15 12C15 10.3431 13.6569 9 12 9C10.3431 9 9 10.3431 9 12C9 13.6569 10.3431 15 12 15Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          `;
+        }
+      });
+    }
+
+    // OTP Timer Countdown
+    let timeLeft = 300; // 5 minutes in seconds
+    const timerText = document.getElementById('timerText');
+    const resendBtn = document.getElementById('resendBtn');
+    const resendCountdown = document.getElementById('resendCountdown');
+
+    function startTimer() {
+      const timer = setInterval(() => {
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        
+        timerText.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          timerText.textContent = 'Expired';
+          timerText.style.color = '#ef4444';
+          resendBtn.disabled = false;
+          resendCountdown.textContent = '';
+        } else {
+          timeLeft--;
+          
+          // Update resend countdown
+          const resendMinutes = Math.floor(timeLeft / 60);
+          const resendSeconds = timeLeft % 60;
+          resendCountdown.textContent = ` (${resendMinutes}:${resendSeconds.toString().padStart(2, '0')})`;
+        }
+      }, 1000);
+    }
+
+    // Start timer on page load
+    startTimer();
+
+    // Resend OTP functionality
+    const resendForm = document.getElementById('resendForm');
+    if (resendForm) {
+      resendForm.addEventListener('submit', function(e) {
+        if (resendBtn.disabled) {
+          e.preventDefault();
+          return;
+        }
+        
+        // Reset timer
+        timeLeft = 300;
+        startTimer();
+        resendBtn.disabled = true;
+        timerText.style.color = 'var(--warning-color)';
+        
+        // Show success message
+        showTempMessage('OTP has been resent to your email');
+      });
+    }
+
+    function showTempMessage(message) {
+      const tempDiv = document.createElement('div');
+      tempDiv.className = 'alert alert-success';
+      tempDiv.innerHTML = `
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M22 11.08V12C21.9988 14.1564 21.3005 16.2547 20.0093 17.9818C18.7182 19.709 16.9033 20.9725 14.8354 21.5839C12.7674 22.1953 10.5573 22.1219 8.53447 21.3746C6.51168 20.6273 4.78465 19.2461 3.61096 17.4371C2.43727 15.628 1.87979 13.4881 2.02168 11.3363C2.16356 9.18455 2.99721 7.13631 4.39828 5.49706C5.79935 3.85781 7.69279 2.71537 9.79619 2.24013C11.8996 1.7649 14.1003 1.98232 16.07 2.85999" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M22 4L12 14.01L9 11.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        ${message}
+      `;
+      
+      otpForm.parentNode.insertBefore(tempDiv, otpForm);
+      
+      setTimeout(() => {
+        tempDiv.remove();
+      }, 5000);
+    }
+
+    // Auto-focus OTP input on page load
+    if (otpInput) {
+      setTimeout(() => {
+        otpInput.focus();
+      }, 500);
+    }
+  });
+</script>

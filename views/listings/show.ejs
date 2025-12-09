@@ -1,0 +1,375 @@
+<%- layout('layouts/boilerplate') %>
+
+<% if (typeof error !== 'undefined' && error) { %>
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+    <%= error %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<% if (typeof bookingSuccess !== 'undefined' && bookingSuccess) { %>
+  <div class="alert alert-success alert-dismissible fade show" role="alert">
+    <%= bookingSuccess %>
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+  </div>
+<% } %>
+
+<% if (typeof listings !== 'undefined' && listings) { %>
+  <h2><%= listings.title %></h2>
+  
+  <% if (listings.image && listings.image.url) { %>
+    <img src="<%= listings.image.url %>" class="listing-image">
+  <% } %>
+  
+  <p><%= listings.description %></p>
+  <p>₹ <%= listings.price %></p>
+  <p><%= listings.location %>, <%= listings.country %></p>
+
+  <div id="booking" class="mt-3 mb-4 p-3 border rounded">
+    <h5>Book this place</h5>
+    <form id="booking-form" method="POST" action="/listings/<%= listings._id %>/book">
+      <div class="row g-2">
+        <div class="col-md-4">
+          <label class="form-label">Check-in</label>
+          <input type="date" name="checkIn" class="form-control" required>
+        </div>
+        <div class="col-md-4">
+          <label class="form-label">Check-out</label>
+          <input type="date" name="checkOut" class="form-control" required>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Guests</label>
+          <input type="number" name="guests" min="1" value="1" class="form-control" required>
+        </div>
+        <div class="col-md-1 d-flex align-items-end">
+          <button class="btn btn-success w-100" type="submit">Book</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <a href="/listings/<%= listings._id %>/edit" class="btn btn-warning">Edit</a>
+  
+  <form method="POST" action="/listings/<%= listings._id %>?_method=DELETE" class="mt-2">
+    <button class="btn btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+  </form>
+
+  <hr class="my-4">
+
+  <h4 id="reviews">Reviews</h4>
+
+  <form method="POST" action="/listings/<%= listings._id %>/reviews" class="mb-4">
+    <div class="mb-2">
+      <label class="form-label">Rating</label>
+      <select name="rating" class="form-select" required>
+        <option value="5">5 ★</option>
+        <option value="4">4 ★</option>
+        <option value="3">3 ★</option>
+        <option value="2">2 ★</option>
+        <option value="1">1 ★</option>
+      </select>
+    </div>
+    <div class="mb-2">
+      <label class="form-label">Comment</label>
+      <textarea name="comment" class="form-control" rows="3" required></textarea>
+    </div>
+    <button class="btn btn-primary">Submit Review</button>
+  </form>
+
+  <% if (listings.reviews && listings.reviews.length > 0) { %>
+    <% listings.reviews.forEach(function(review) { %>
+      <div class="border rounded p-3 mb-3 review-card">
+        <div class="d-flex justify-content-between align-items-center mb-1 review-header">
+          <div>
+            <% for (var i = 1; i <= 5; i++) { %>
+              <% if (i <= review.rating) { %>
+                <span class="text-warning">&#9733;</span>
+              <% } else { %>
+                <span class="text-muted">&#9733;</span>
+              <% } %>
+            <% } %>
+          </div>
+          <small class="text-muted">
+            <% if (review.user && review.user.email) { %>
+              <%= review.user.email %>
+            <% } else { %>
+              Guest
+            <% } %>
+            <% if (review.createdAt) { %>
+              · <%= review.createdAt.toDateString() %>
+            <% } %>
+          </small>
+        </div>
+
+        <p class="mb-2"><%= review.comment %></p>
+
+        <div class="d-flex align-items-center gap-2 mt-2">
+          <form method="POST" action="/listings/<%= listings._id %>/reviews/<%= review._id %>/like" class="d-inline">
+            <button type="submit" class="btn btn-sm btn-outline-secondary">
+              Like (<%= review.likes || 0 %>)
+            </button>
+          </form>
+
+          <% var isOwner = (typeof user !== 'undefined' && user && review.user && String(review.user._id || review.user) === String(user._id)); %>
+          <% if (isOwner) { %>
+            <form method="POST" action="/listings/<%= listings._id %>/reviews/<%= review._id %>?_method=DELETE" class="d-inline ms-2">
+              <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this review?')">
+                Delete
+              </button>
+            </form>
+          <% } %>
+        </div>
+
+        <% if (isOwner) { %>
+          <form method="POST" action="/listings/<%= listings._id %>/reviews/<%= review._id %>?_method=PUT" class="mt-3">
+            <div class="row g-2 align-items-center">
+              <div class="col-md-3">
+                <select name="rating" class="form-select form-select-sm">
+                  <option value="5" <%= review.rating === 5 ? "selected" : "" %>>5 ★</option>
+                  <option value="4" <%= review.rating === 4 ? "selected" : "" %>>4 ★</option>
+                  <option value="3" <%= review.rating === 3 ? "selected" : "" %>>3 ★</option>
+                  <option value="2" <%= review.rating === 2 ? "selected" : "" %>>2 ★</option>
+                  <option value="1" <%= review.rating === 1 ? "selected" : "" %>>1 ★</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <input type="text" name="comment" class="form-control form-control-sm" value="<%= review.comment %>">
+              </div>
+              <div class="col-md-3 d-flex justify-content-end">
+                <button class="btn btn-sm btn-primary">Update Review</button>
+              </div>
+            </div>
+          </form>
+        <% } %>
+      </div>
+    <% }) %>
+  <% } else { %>
+    <p class="text-muted">No reviews yet. Be the first to review.</p>
+  <% } %>
+<% } else { %>
+  <div class="alert alert-warning">
+    Listing not found or has been deleted.
+  </div>
+<% } %>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  (function () {
+    var form = document.getElementById("booking-form");
+    if (!form) return;
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var checkInInput = form.querySelector('input[name="checkIn"]');
+      var checkOutInput = form.querySelector('input[name="checkOut"]');
+      var guestsInput = form.querySelector('input[name="guests"]');
+
+      var checkIn = checkInInput ? checkInInput.value : "";
+      var checkOut = checkOutInput ? checkOutInput.value : "";
+      var guests = guestsInput ? guestsInput.value || "1" : "1";
+
+      fetch("/payments/create-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          listingId: "<%= listings._id %>",
+          checkIn: checkIn,
+          checkOut: checkOut,
+          guests: guests
+        })
+      })
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (!data || !data.success) {
+            alert(data && data.message ? data.message : "Unable to start payment. Please try again.");
+            return;
+          }
+
+          var options = {
+            key: data.keyId,
+            amount: data.amount,
+            currency: data.currency,
+            name: "Wanderlust Booking",
+            description: data.listingTitle || "",
+            order_id: data.orderId,
+            handler: function (response) {
+              fetch("/payments/verify", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                  razorpay_payment_id: response.razorpay_payment_id,
+                  razorpay_order_id: response.razorpay_order_id,
+                  razorpay_signature: response.razorpay_signature,
+                  listingId: data.listingId,
+                  checkIn: checkIn,
+                  checkOut: checkOut,
+                  guests: guests
+                })
+              })
+                .then(function (res) { return res.json(); })
+                .then(function (verifyResult) {
+                  if (verifyResult && verifyResult.success) {
+                    window.location.href = "/listings/" + data.listingId + "?booked=1";
+                  } else {
+                    alert(verifyResult && verifyResult.message ? verifyResult.message : "Payment verification failed.");
+                  }
+                })
+                .catch(function () {
+                  alert("Payment verification error. Please contact support.");
+                });
+            },
+            prefill: {
+              email: data.email || ""
+            },
+            theme: {
+              color: "#198754"
+            },
+            method: {
+              upi: true,
+              wallet: true,
+              card: false,
+              netbanking: false
+            }
+          };
+
+          var rzp = new Razorpay(options);
+          rzp.open();
+        })
+        .catch(function () {
+          alert("Unable to connect to payment server. Please try again.");
+        });
+    });
+  })();
+</script>
+
+<style>
+/* ===== Perfect Modern UI for Listing Page ===== */
+
+/* Page background & spacing (keeps Bootstrap layout) */
+body {
+  background: #f7f9fc;
+  padding-bottom: 50px;
+}
+
+/* Headings */
+h2, h4, h5 {
+  font-weight: 700;
+  color: #1c1c1c;
+}
+
+/* Listing Image */
+.listing-image {
+  width: 100%;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+  margin-bottom: 16px;
+}
+
+/* Paragraph text */
+p {
+  font-size: 16px;
+  color: #444;
+}
+
+/* Booking Box */
+#booking {
+  background: #ffffff;
+  border: none !important;
+  border-radius: 14px !important;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+#booking h5 {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Inputs & selects */
+.form-control, .form-select {
+  border-radius: 10px;
+  padding: 10px 12px;
+  border: 1px solid #d0d0d0;
+  transition: 0.25s;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 3px rgba(13,110,253,0.2);
+}
+
+/* Buttons */
+.btn-success,
+.btn-warning,
+.btn-danger,
+.btn-primary {
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+/* Review Card */
+.review-card,
+.border.rounded {
+  border: none !important;
+  border-radius: 14px !important;
+  background: #ffffff;
+  padding: 18px !important;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.06);
+}
+
+/* Review header */
+.review-header {
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+}
+
+/* Review stars */
+.text-warning {
+  font-size: 18px;
+}
+
+/* Review actions */
+.btn-outline-secondary {
+  border-radius: 8px;
+}
+
+/* Small controls for edit review */
+.form-select-sm, .form-control-sm {
+  border-radius: 8px;
+}
+
+/* Alerts */
+.alert {
+  border: none !important;
+  border-radius: 12px !important;
+  padding: 15px 18px;
+  font-size: 16px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+/* Submit review button */
+.btn-primary {
+  padding: 10px 20px;
+}
+
+/* No reviews text */
+.text-muted {
+  font-size: 16px;
+  opacity: 0.75;
+}
+
+/* Global hover animation */
+button, a.btn {
+  transition: 0.25s;
+}
+
+button:hover, a.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+</style>

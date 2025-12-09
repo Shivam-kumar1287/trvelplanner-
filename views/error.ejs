@@ -1,0 +1,9 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="alert alert-danger alert-dismissible fade show" role="alert">
+  <h4 class="alert-heading">Error <%= err.status || 500 %></h4>
+  <p><%= err.message || "Something went wrong!" %></p>
+  <hr>
+  <a href="/listings" class="btn btn-primary">Back to Listings</a>
+  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+</div>

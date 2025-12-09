@@ -1,0 +1,16 @@
+<%- include("partials/header") %>
+
+<div class="container mt-5">
+  <h2>📊 Dashboard</h2>
+  <p><strong>Total Users:</strong> <%= totalUsers %></p>
+  <p><strong>Total Listings:</strong> <%= totalListings %></p>
+
+  <h4 class="mt-4">🆕 Latest Listings</h4>
+  <ul>
+    <% latestListings.forEach(l => { %>
+      <li><a href="/listings/<%= l._id %>"><%= l.title %></a></li>
+    <% }) %>
+  </ul>
+</div>
+
+<%- include("partials/footer") %>

@@ -1,0 +1,55 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="/">🏠 𝕄𝕒𝕜𝕖𝕄𝕪पथ</a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <% if (user) { %>
+          <!-- Add Listing Button -->
+          <li class="nav-item me-2">
+            <a class="nav-link btn btn-success btn-sm text-white" href="/listings/new">
+              <i class="fa-solid fa-plus"></i> Add Listing
+            </a>
+          </li>
+
+          <!-- Listings Link -->
+          <li class="nav-item">
+            <a class="nav-link" href="/listings">
+              <i class="fa-solid fa-list"></i> Listings
+            </a>
+          </li>
+
+          <!-- Profile Dropdown (Logged In) -->
+          <li class="nav-item dropdown ms-2">
+            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown">
+              <i class="fa-solid fa-circle-user"></i> <%= user.email %>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+              <li><a class="dropdown-item" href="/profile"><i class="fa-solid fa-user"></i> My Profile</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form method="POST" action="/logout" style="display: inline;">
+                  <button type="submit" class="dropdown-item" style="cursor: pointer; background: none; border: none; text-align: left; width: 100%;">
+                    <i class="fa-solid fa-sign-out-alt"></i> Logout
+                  </button>
+                </form>
+              </li>
+            </ul>
+          </li>
+        <% } else { %>
+          <!-- Login/Signup Links (Not Logged In) -->
+          <li class="nav-item">
+            <a class="nav-link" href="/login">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/signup">Sign Up</a>
+          </li>
+        <% } %>
+      </ul>
+    </div>
+  </div>
+</nav>

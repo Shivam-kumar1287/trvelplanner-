@@ -1,0 +1,105 @@
+<%- layout('layouts/boilerplate') %>
+
+<div class="container mt-5 d-flex justify-content-center">
+  <div class="card shadow-lg border-0 p-4" style="max-width: 550px; width: 100%; border-radius: 18px;">
+
+    <div class="text-center mb-4">
+      <h2 class="fw-bold text-primary">
+        <i class="bi bi-person-circle me-2"></i>Your Profile
+      </h2>
+      <p class="text-muted">Manage your account details</p>
+    </div>
+
+    <% if (typeof user !== 'undefined' && user) { %>
+
+      <div class="mb-4">
+        <label class="form-label fw-semibold">
+          <i class="bi bi-envelope-fill me-2 text-primary"></i>Email Address
+        </label>
+        <div class="p-2 rounded bg-light border"><strong><%= user.email %></strong></div>
+      </div>
+
+      <div class="mb-4">
+        <form method="POST" action="/profile">
+          <label for="email" class="form-label fw-semibold">
+            <i class="bi bi-pencil-square me-2 text-success"></i>Update Email
+          </label>
+          <input 
+            id="email" 
+            name="email" 
+            type="email" 
+            class="form-control form-control-lg mb-3" 
+            value="<%= user.email %>" 
+            required
+          >
+
+          <button class="btn btn-success w-100 py-2 fw-semibold">
+            <i class="bi bi-check-circle me-1"></i>Update Email
+          </button>
+        </form>
+      </div>
+
+      <hr class="my-4">
+      <h5 class="fw-semibold mb-3">
+        <i class="bi bi-calendar-check me-2 text-primary"></i>Your Bookings
+      </h5>
+
+      <% if (user.bookings && user.bookings.length > 0) { %>
+        <div class="list-group mb-4">
+          <% user.bookings.forEach(function(booking) { %>
+            <div class="list-group-item list-group-item-action">
+              <div class="d-flex justify-content-between">
+                <div>
+                  <div class="fw-semibold">
+                    <%= booking.listing && booking.listing.title ? booking.listing.title : 'Listing' %>
+                  </div>
+                  <small class="text-muted d-block">
+                    <% if (booking.checkIn) { %>
+                      <%= booking.checkIn.toDateString() %>
+                    <% } %>
+                    <% if (booking.checkOut) { %>
+                      · <%= booking.checkOut.toDateString() %>
+                    <% } %>
+                  </small>
+                  <% if (booking.guests) { %>
+                    <small class="text-muted">Guests: <%= booking.guests %></small>
+                  <% } %>
+                </div>
+                <div class="text-end">
+                  <% if (booking.listing && booking.listing._id) { %>
+                    <a href="/listings/<%= booking.listing._id %>" class="btn btn-sm btn-outline-primary">
+                      View
+                    </a>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      <% } else { %>
+        <p class="text-muted mb-4">
+          <i class="bi bi-info-circle me-2"></i>No bookings yet.
+        </p>
+      <% } %>
+
+      <form method="POST" action="/logout" class="mb-3">
+        <button class="btn btn-danger w-100 py-2 fw-semibold">
+          <i class="bi bi-box-arrow-right me-2"></i>Logout
+        </button>
+      </form>
+
+      <a href="/listings" class="btn btn-outline-primary w-100 py-2 fw-semibold">
+        <i class="bi bi-arrow-left-circle me-2"></i>Back to Listings
+      </a>
+
+    <% } else { %>
+
+      <div class="alert alert-warning">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        No user session found. <a href="/login">Login</a>
+      </div>
+
+    <% } %>
+
+  </div>
+</div>
